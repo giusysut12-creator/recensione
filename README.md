@@ -57,6 +57,20 @@ tests/                   test unitari (vitest)
    `0002_review_translation.sql`, ...).
 3. Project Settings → API: copia `Project URL` e la chiave `service_role`.
 
+**Supabase condiviso (piano free già pieno).** Si può usare un progetto esistente mettendo le
+tabelle in uno schema separato, senza toccare quelle che ci sono:
+1. Genera lo script: `node scripts/schema-sql.mjs vdc > vdc.sql` ed eseguilo nel SQL Editor.
+   Crea tutto nello schema `vdc`, in una sola transazione (se qualcosa fallisce non salva nulla),
+   e non modifica `public`. Va eseguito una volta sola; per migrazioni future:
+   `node scripts/schema-sql.mjs vdc 0003 > nuove.sql`.
+2. Project Settings → Data API → *Exposed schemas*: **aggiungi** `vdc` lasciando gli schemi già
+   presenti (togliere `public` romperebbe l'altra app).
+3. Imposta `SUPABASE_SCHEMA=vdc`.
+
+Verificato su un database che simula un progetto esistente, con tabelle omonime in `public`
+(`reviews`, `sources`), un tipo e una funzione con lo stesso nome: dopo installazione e analisi
+completa, `public` è identico (struttura, permessi e dati).
+
 RLS è attiva su tutte le tabelle senza policy pubbliche: la chiave `anon` non legge nulla. L'app usa
 solo la `service_role`, e solo lato server.
 

@@ -8,6 +8,9 @@ import { z } from "zod";
 const EnvSchema = z.object({
   SUPABASE_URL: z.string().url(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
+  // Schema Postgres delle tabelle: "public" per un progetto dedicato, oppure uno schema
+  // separato (es. "vdc") per condividere un progetto Supabase esistente.
+  SUPABASE_SCHEMA: z.string().regex(/^[a-z_][a-z0-9_]{0,62}$/).default("public"),
 
   APIFY_TOKEN: z.string().min(1),
   APIFY_GOOGLE_REVIEWS_ACTOR: z.string().default("compass/google-maps-reviews-scraper"),

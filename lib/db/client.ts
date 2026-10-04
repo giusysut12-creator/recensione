@@ -6,13 +6,14 @@ import { env } from "@/lib/env";
  * Client Supabase con service role: SOLO lato server. Le tabelle hanno RLS attiva
  * senza policy pubbliche, quindi la chiave anon non può leggere nulla.
  */
-let client: SupabaseClient | null = null;
+let client: SupabaseClient<any, string> | null = null; // eslint-disable-line @typescript-eslint/no-explicit-any
 
-export function db(): SupabaseClient {
+export function db(): SupabaseClient<any, string> { // eslint-disable-line @typescript-eslint/no-explicit-any
   if (!client) {
     const e = env();
     client = createClient(e.SUPABASE_URL, e.SUPABASE_SERVICE_ROLE_KEY, {
       auth: { persistSession: false, autoRefreshToken: false },
+      db: { schema: e.SUPABASE_SCHEMA },
     });
   }
   return client;
