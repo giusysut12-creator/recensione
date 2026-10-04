@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+/* Design token: sobri, leggibili, nessun gradiente. Dark mode con step propri. */
+:root {
+  --bg: #f7f6f3;
+  --surface: #ffffff;
+  --surface-2: #f1f0ec;
+  --ink: #1b1a18;
+  --ink-2: #52514e;
+  --ink-3: #7a7873;
+  --line: #e4e2dd;
+  --line-strong: #cfccc5;
+  --accent: #1b1a18;
+  --accent-ink: #ffffff;
+  --pos: #2a78d6;
+  --pos-soft: #e8f1fb;
+  --neg: #e34948;
+  --neg-soft: #fcecec;
+  --neutral: #a8a6a0;
+  --lettura: #6a4fc7;
+  --lettura-soft: #f3f0fb;
+  --mark: #fff1b8;
+  --star: #c98500;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121211;
+    --surface: #1a1a19;
+    --surface-2: #232321;
+    --ink: #f4f3ef;
+    --ink-2: #c3c2b7;
+    --ink-3: #94928a;
+    --line: #2e2e2b;
+    --line-strong: #44443f;
+    --accent: #f4f3ef;
+    --accent-ink: #121211;
+    --pos: #3987e5;
+    --pos-soft: #172434;
+    --neg: #e66767;
+    --neg-soft: #341a1a;
+    --neutral: #6b6a64;
+    --lettura: #a998ee;
+    --lettura-soft: #221d33;
+    --mark: #4a3f12;
+    --star: #e0a526;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-pos: var(--pos);
+  --color-pos-soft: var(--pos-soft);
+  --color-neg: var(--neg);
+  --color-neg-soft: var(--neg-soft);
+  --color-neutral: var(--neutral);
+  --color-lettura: var(--lettura);
+  --color-lettura-soft: var(--lettura-soft);
+  --color-mark: var(--mark);
+  --color-star: var(--star);
+  --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Iowan Old Style", "Charter", "Georgia", ui-serif, serif;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+mark {
+  background: var(--mark);
+  color: inherit;
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--pos);
+  outline-offset: 2px;
+}
