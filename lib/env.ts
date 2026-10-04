@@ -1,12 +1,13 @@
 import "server-only";
 import { z } from "zod";
+import { normalizeSupabaseUrl } from "@/lib/supabase-url";
 
 /**
  * Configurazione server-side. Nessuna di queste variabili deve avere il prefisso
  * NEXT_PUBLIC_: non arrivano mai al browser.
  */
 const EnvSchema = z.object({
-  SUPABASE_URL: z.string().url(),
+  SUPABASE_URL: z.string().trim().url().transform(normalizeSupabaseUrl),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
   // Schema Postgres delle tabelle: "public" per un progetto dedicato, oppure uno schema
   // separato (es. "vdc") per condividere un progetto Supabase esistente.
