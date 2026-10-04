@@ -43,7 +43,8 @@ export async function startGoogleReviewsRun(placeUrl: string, maxReviews: number
     .actor(e.APIFY_GOOGLE_REVIEWS_ACTOR)
     .start(input, {
       timeout: 600, // secondi: oltre questo il run è considerato fallito
-      maxItems: maxReviews + 5, // tetto di spesa per Actor a pagamento per risultato
+      maxItems: maxReviews + 5, // tetto di spesa se l'Actor è a pagamento per risultato
+      maxTotalChargeUsd: e.APIFY_MAX_CHARGE_USD, // tetto di spesa se l'Actor è "pay per event" (caso attuale)
     });
   return { runId: run.id, datasetId: run.defaultDatasetId };
 }

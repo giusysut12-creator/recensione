@@ -16,6 +16,8 @@ const EnvSchema = z.object({
   APIFY_EXTRA_INPUT: z.string().optional(),
   // Solo per test locali (servizio simulato). In produzione lasciare vuoto.
   APIFY_BASE_URL: z.string().url().optional(),
+  // Tetto di spesa per singolo run (Actor "pay per event"). ~$0,60 ogni 1.000 recensioni misurato.
+  APIFY_MAX_CHARGE_USD: z.coerce.number().positive().max(50).default(1),
 
   AI_PROVIDER: z.enum(["anthropic", "openai"]).default("anthropic"),
   AI_MODEL_FAST: z.string().optional(),

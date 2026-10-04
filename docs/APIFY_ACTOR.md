@@ -25,7 +25,7 @@ di sviluppo; le informazioni sono state raccolte da risultati di ricerca sulle p
 | Output `reviewId`, `stars`, `text`, `publishedAtDate`, `responseFromOwnerText`, `reviewUrl`, `placeId`, `totalScore` | verificato |
 | Output `title`, `categoryName`, `address`, `reviewsCount`, `name`, `responseFromOwnerDate`, `originalLanguage` | **da verificare** al primo run reale: il normalizzatore li tratta come opzionali |
 | Input per lingua, data minima, esclusione dati personali del recensore | **da verificare**: non usati. Si possono aggiungere con `APIFY_EXTRA_INPUT` dopo la verifica |
-| Prezzo per 1.000 recensioni | **da verificare** sul listino attuale nella Console Apify |
+| Prezzo | **misurato**: run reale con 100 risultati = $0,06 (~$0,60 ogni 1.000 recensioni), tariffa *pay per event* |
 
 **Primo export reale (Console, 4 ottobre 2026):** l'export conteneva solo `title`, `url`, `stars`,
 `name`, `reviewUrl`, `text`. Probabilmente si trattava della vista ridotta della Console: va
@@ -39,7 +39,8 @@ Con la versione installata di `apify-client`, l'avvio di un Actor chiama `POST /
 
 ## Come usiamo l'Actor
 - Avvio asincrono con `maxReviews` = limite per analisi (default 300, le più recenti).
-- `maxItems` = tetto di spesa per gli Actor a pagamento per risultato.
+- Tetto di spesa: `maxTotalChargeUsd` (`APIFY_MAX_CHARGE_USD`, default $1), valido per gli Actor
+  *pay per event* come questo; `maxItems` copre il caso di Actor pagati a risultato.
 - `timeout` 600 secondi; un run fallito o scaduto produce un errore comprensibile all'utente.
 - Lettura del dataset a pagine con `clean: true`.
 - Del dato originale conserviamo solo i campi utili. Non conserviamo ID, link al profilo o foto del
