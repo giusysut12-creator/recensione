@@ -53,7 +53,8 @@ tests/                   test unitari (vitest)
 
 ### 1. Supabase
 1. Crea un progetto (consigliata regione UE, es. Francoforte).
-2. SQL Editor → esegui `supabase/migrations/0001_init.sql`.
+2. SQL Editor → esegui, in ordine, tutti i file di `supabase/migrations/` (`0001_init.sql`,
+   `0002_review_translation.sql`, ...).
 3. Project Settings → API: copia `Project URL` e la chiave `service_role`.
 
 RLS è attiva su tutte le tabelle senza policy pubbliche: la chiave `anon` non legge nulla. L'app usa
