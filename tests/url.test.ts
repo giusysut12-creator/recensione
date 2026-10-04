@@ -57,3 +57,24 @@ describe("resolveGoogleUrl", () => {
     expect(r).toEqual({ ok: false, code: "resolve_failed" });
   });
 });
+
+import { buildActorInput } from "@/lib/sources/google/actor-input";
+
+describe("buildActorInput", () => {
+  it("usa i campi verificati, esclude i dati personali e chiede traduzioni in italiano", () => {
+    const input = buildActorInput("https://www.google.com/maps/place/X", 300);
+    expect(input).toEqual({
+      startUrls: [{ url: "https://www.google.com/maps/place/X" }],
+      maxReviews: 300,
+      reviewsSort: "newest",
+      language: "it",
+      personalData: false,
+    });
+  });
+  it("aggiunge la data minima in formato AAAA-MM-GG e non permette di sovrascrivere le impostazioni di privacy", () => {
+    const input = buildActorInput("u", 10, { since: "2026-09-01T10:00:00.000Z", extra: { personalData: true, foo: 1 } });
+    expect(input.reviewsStartDate).toBe("2026-09-01");
+    expect(input.personalData).toBe(false);
+    expect(input.foo).toBe(1);
+  });
+});

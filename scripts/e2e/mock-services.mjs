@@ -139,6 +139,11 @@ function handleApify(req, url, res) {
   let m;
   if (req.method === "POST" && (m = url.pathname.match(/^\/v2\/(?:acts|actors)\/([^/]+)\/runs$/))) {
     const id = `run_${runs.size + 1}`;
+    try {
+      stats.lastActorInput = JSON.parse(req.rawBody || "{}");
+    } catch {
+      stats.lastActorInput = null;
+    }
     runs.set(id, { polls: 0, actor: decodeURIComponent(m[1]), datasetId: `ds_${id}` });
     return send(201, { data: { id, actId: m[1], status: "RUNNING", defaultDatasetId: `ds_${id}` } });
   }
@@ -191,6 +196,7 @@ http
     let raw = "";
     req.on("data", (c) => (raw += c));
     req.on("end", () => {
+      req.rawBody = raw;
       if (url.pathname.startsWith("/v2/")) return handleApify(req, url, res);
       if (url.pathname === "/v1/messages") {
         const body = JSON.parse(raw || "{}");

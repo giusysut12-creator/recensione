@@ -24,7 +24,7 @@ di sviluppo; le informazioni sono state raccolte da risultati di ricerca sulle p
 | Input `startUrls` (URL di schede), `maxReviews`, `reviewsSort` (`newest`, `mostRelevant`, `highestRanking`, `lowestRanking`) | verificato |
 | Output `reviewId`, `stars`, `text`, `publishedAtDate`, `responseFromOwnerText`, `reviewUrl`, `placeId`, `totalScore` | verificato |
 | Output `title`, `categoryName`, `address`, `reviewsCount`, `name`, `responseFromOwnerDate`, `originalLanguage`, `textTranslated`, `translatedLanguage` | **verificato** su un export reale completo (100 recensioni) |
-| Input per lingua, data minima, esclusione dati personali del recensore | **da verificare**: non usati. Si possono aggiungere con `APIFY_EXTRA_INPUT` dopo la verifica |
+| Input `language`, `personalData`, `reviewsStartDate` (`AAAA-MM-GG`) | **verificato** sul JSON di input della Console. Usati: `language: "it"`, `personalData: false`; `reviewsStartDate` predisposto per le rianalisi incrementali |
 | Prezzo | **misurato**: run reale con 100 risultati = $0,06 (~$0,60 ogni 1.000 recensioni), tariffa *pay per event* |
 
 **Export reali (Console, 4 ottobre 2026).** Il primo export conteneva solo `title`, `url`, `stars`,
@@ -48,8 +48,10 @@ Con la versione installata di `apify-client`, l'avvio di un Actor chiama `POST /
   *pay per event* come questo; `maxItems` copre il caso di Actor pagati a risultato.
 - `timeout` 600 secondi; un run fallito o scaduto produce un errore comprensibile all'utente.
 - Lettura del dataset a pagine con `clean: true`.
-- Del dato originale conserviamo solo i campi utili. Non conserviamo ID, link al profilo o foto del
-  recensore; il nome viene ridotto a "Nome I.".
+- `personalData: false`: l'Actor non restituisce nome, ID, profilo e foto dei recensori (le recensioni
+  appaiono come "Cliente"). Se un giorno arrivassero comunque, non vengono salvati e il nome viene
+  ridotto a "Nome I.". Le impostazioni di privacy non sono sovrascrivibili da `APIFY_EXTRA_INPUT`.
+- `language: "it"`: le recensioni in altre lingue arrivano con la traduzione italiana di Google.
 
 ## Checklist per il primo run reale
 1. Dalla Console Apify, esegui l'Actor con un URL reale e `maxReviews: 20`.

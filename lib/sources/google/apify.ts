@@ -1,6 +1,7 @@
 import "server-only";
 import { ApifyClient } from "apify-client";
 import { env } from "@/lib/env";
+import { buildActorInput } from "./actor-input";
 
 /**
  * Integrazione Apify per le recensioni Google.
@@ -22,7 +23,7 @@ export interface StartedRun {
   datasetId: string;
 }
 
-export async function startGoogleReviewsRun(placeUrl: string, maxReviews: number): Promise<StartedRun> {
+export async function startGoogleReviewsRun(placeUrl: string, maxReviews: number, since?: string | null): Promise<StartedRun> {
   const e = env();
   let extra: Record<string, unknown> = {};
   if (e.APIFY_EXTRA_INPUT) {
@@ -32,13 +33,7 @@ export async function startGoogleReviewsRun(placeUrl: string, maxReviews: number
       throw new Error("APIFY_EXTRA_INPUT non è JSON valido");
     }
   }
-  // Campi di input verificati sulla documentazione dell'Actor: startUrls, maxReviews, reviewsSort
-  const input = {
-    ...extra,
-    startUrls: [{ url: placeUrl }],
-    maxReviews,
-    reviewsSort: "newest",
-  };
+  const input = buildActorInput(placeUrl, maxReviews, { since, extra });
   const run = await apify()
     .actor(e.APIFY_GOOGLE_REVIEWS_ACTOR)
     .start(input, {
