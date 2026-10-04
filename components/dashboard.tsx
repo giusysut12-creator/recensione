@@ -93,7 +93,7 @@ export function Dashboard({ view }: { view: AnalysisView }) {
             value={fmtInt(ov.reviewsTotal)}
             extra={<span className="text-xs text-ink-3">{view.source?.reviewCount ? `su ${fmtInt(view.source.reviewCount)} totali · ` : ""}{fmtInt(ov.reviewsWithText)} con testo</span>}
           />
-          <Stat label="Periodo coperto" value={`${fmtMonthYear(ov.periodFrom)} – ${fmtMonthYear(ov.periodTo)}`} small />
+          <Stat label="Periodo coperto" value={ov.periodFrom ? `${fmtMonthYear(ov.periodFrom)} – ${fmtMonthYear(ov.periodTo)}` : "Date non disponibili"} small />
           <Stat
             label="Risposte del titolare"
             value={ov.ownerReplyRate !== null ? fmtPct(ov.ownerReplyRate) : "–"}

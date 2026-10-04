@@ -51,8 +51,21 @@ export function contentHash(rating: number, text: string | null): string {
   return createHash("sha256").update(`${rating}\u0000${text ?? ""}`).digest("hex").slice(0, 32);
 }
 
+/** placeId dal campo dedicato o, in sua assenza, dal parametro query_place_id dell'URL della scheda. */
+function placeIdOf(item: Item): string | null {
+  const direct = str(item.placeId);
+  if (direct) return direct;
+  const url = str(item.url);
+  if (!url) return null;
+  try {
+    return new URL(url).searchParams.get("query_place_id");
+  } catch {
+    return null;
+  }
+}
+
 function extractPlace(item: Item): NormalizedPlace | null {
-  const placeId = str(item.placeId);
+  const placeId = placeIdOf(item);
   const name = str(item.title) ?? str(item.placeName);
   if (!placeId || !name) return null;
   return {
@@ -99,8 +112,12 @@ export function normalizeGoogleItems(items: unknown[]): NormalizationResult {
     const reviewDate = isoDate(item.publishedAtDate);
     const authorDisplay = minimizeAuthorName(str(item.name) ?? str(item.reviewerName));
     const hash = contentHash(rating, text);
+    // ID: reviewId dell'Actor; altrimenti l'URL della recensione (stabile e univoco);
+    // in ultima istanza un hash di autore, data e contenuto.
+    const reviewUrl = str(item.reviewUrl);
     const externalReviewId =
       str(item.reviewId) ??
+      (reviewUrl ? `u_${createHash("sha256").update(reviewUrl).digest("hex").slice(0, 32)}` : null) ??
       `h_${createHash("sha256").update(`${authorDisplay ?? ""}|${reviewDate ?? ""}|${hash}`).digest("hex").slice(0, 24)}`;
 
     if (byId.has(externalReviewId)) {
@@ -118,7 +135,7 @@ export function normalizeGoogleItems(items: unknown[]): NormalizationResult {
       reviewDate,
       ownerReplyText: cleanReviewText(str(item.responseFromOwnerText)),
       ownerReplyDate: isoDate(item.responseFromOwnerDate),
-      reviewUrl: str(item.reviewUrl),
+      reviewUrl,
       contentHash: hash,
       raw: {
         // Sottoinsieme minimo e non identificativo, utile per debug

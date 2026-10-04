@@ -27,6 +27,13 @@ di sviluppo; le informazioni sono state raccolte da risultati di ricerca sulle p
 | Input per lingua, data minima, esclusione dati personali del recensore | **da verificare**: non usati. Si possono aggiungere con `APIFY_EXTRA_INPUT` dopo la verifica |
 | Prezzo per 1.000 recensioni | **da verificare** sul listino attuale nella Console Apify |
 
+**Primo export reale (Console, 4 ottobre 2026):** l'export conteneva solo `title`, `url`, `stars`,
+`name`, `reviewUrl`, `text`. Probabilmente si trattava della vista ridotta della Console: va
+ricontrollato con un export di tutti i campi, o via API. Confermati: `stars` intero, `text` `null` per
+le recensioni con solo voto, testi in più lingue, `url` con il parametro `query_place_id`, `name` con
+il nome completo (che riduciamo). Per robustezza il normalizzatore ricava il `placeId` da
+`query_place_id` e, se manca `reviewId`, usa l'URL della recensione come ID stabile.
+
 Con la versione installata di `apify-client`, l'avvio di un Actor chiama `POST /v2/actors/{id}/runs`
 (verificato nel test locale).
 

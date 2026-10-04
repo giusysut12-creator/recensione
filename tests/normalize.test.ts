@@ -62,6 +62,32 @@ describe("normalizeGoogleItems", () => {
   });
 });
 
+describe("formato reale dell'export Apify (campi ridotti)", () => {
+  // Stessa forma di un export reale ricevuto dalla Console (nomi anonimizzati)
+  const url = "https://www.google.com/maps/search/?api=1&query=Parco%20nazionale%20di%20Yellowstone&query_place_id=ChIJVVVVVVXlUVMRu-GPNDD5qKw";
+  const items = [
+    { title: "Parco nazionale di Yellowstone", url, stars: 3, name: "Anna B.", reviewUrl: "https://www.google.com/maps/reviews/data=!4m8!1sAAA?hl=it", text: null },
+    { title: "Parco nazionale di Yellowstone", url, stars: 5, name: "Nome Cognome", reviewUrl: "https://www.google.com/maps/reviews/data=!4m8!1sBBB?hl=it", text: "A MUST see! It's like Heaven on Earth!" },
+    { title: "Parco nazionale di Yellowstone", url, stars: 5, name: "utente.123", reviewUrl: "https://www.google.com/maps/reviews/data=!4m8!1sCCC?hl=it", text: "יש פה מהכל\nנופים יפים" },
+  ];
+
+  it("ricava il placeId dall'URL e un ID stabile dall'URL della recensione", () => {
+    const res = normalizeGoogleItems(items);
+    expect(res.place).toMatchObject({ externalId: "ChIJVVVVVVXlUVMRu-GPNDD5qKw", name: "Parco nazionale di Yellowstone" });
+    expect(res.reviews).toHaveLength(3);
+    expect(new Set(res.reviews.map((r) => r.externalReviewId)).size).toBe(3);
+    expect(res.reviews.every((r) => r.externalReviewId.startsWith("u_"))).toBe(true);
+    expect(normalizeGoogleItems(items).reviews[1].externalReviewId).toBe(res.reviews[1].externalReviewId);
+  });
+
+  it("mantiene testo in qualsiasi lingua e voti senza testo", () => {
+    const res = normalizeGoogleItems(items);
+    expect(res.reviews[0].text).toBeNull();
+    expect(res.reviews[2].text).toContain("נופים");
+    expect(res.reviews[1].authorDisplay).toBe("Nome C.");
+  });
+});
+
 describe("minimizeAuthorName", () => {
   it("riduce il cognome all'iniziale", () => {
     expect(minimizeAuthorName("Giulia  De Santis")).toBe("Giulia S.");
