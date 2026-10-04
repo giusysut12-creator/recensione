@@ -39,6 +39,18 @@ le recensioni con solo voto, testi in più lingue, `url` con il parametro `query
 il nome completo (che riduciamo). Per robustezza il normalizzatore ricava il `placeId` da
 `query_place_id` e, se manca `reviewId`, usa l'URL della recensione come ID stabile.
 
+**Run reale via API (Yuki Sushi, Palermo, 4 ottobre 2026)** con lo script
+`scripts/real-run/google-reviews.mts` e l'input esatto dell'app (`maxReviews: 100`, `newest`,
+`language: "it"`, `personalData: false`): `SUCCEEDED` in 14 s, costo **$0,060** (100 eventi
+`review-scraped` a $0,0006 + avvio). Risultato: 100/100 normalizzate, 0 scartate, 63 con testo
+(58 it, 3 en, 1 de, 1 zh), 5 con traduzione italiana, periodo 27/05–30/09/2026, `reviewId`
+presente in tutte. Con `personalData: false` confermati a `null`: `name`, `reviewerId`,
+`reviewerUrl`, `reviewerPhotoUrl` **e anche `reviewUrl`**: in dashboard il link "Apri su Google"
+della singola recensione quindi non compare (la citazione resta verificabile nel testo mostrato).
+`website` non è nell'output (`websiteUrl` resta vuoto). Campi disponibili non ancora usati:
+`reviewDetailedRating` (voti per Cibo/Servizio/Ambiente, nel 67% delle recensioni, chiavi nella
+lingua richiesta), `reviewContext` (tipo di pasto, prezzo a persona, ...), `reviewImageUrls`.
+
 Con la versione installata di `apify-client`, l'avvio di un Actor chiama `POST /v2/actors/{id}/runs`
 (verificato nel test locale).
 

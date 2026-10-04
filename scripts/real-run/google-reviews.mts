@@ -36,12 +36,15 @@ console.log("Input Actor:", JSON.stringify(input));
 
 const client = new ApifyClient({ token: process.env.APIFY_TOKEN });
 const started = Date.now();
-const run = await client.actor(actorId).call(input, {
+const finished = await client.actor(actorId).call(input, {
   timeout: 600,
   maxItems: maxReviews + 5,
   maxTotalChargeUsd: maxCharge,
 });
 const secs = Math.round((Date.now() - started) / 1000);
+// Il costo dei run "pay per event" viene aggiornato con qualche secondo di ritardo
+await new Promise((r) => setTimeout(r, 5000));
+const run = (await client.run(finished.id).get()) ?? finished;
 console.log(`Run ${run.id}: ${run.status} in ${secs}s, costo $${(run.usageTotalUsd ?? 0).toFixed(3)}`);
 if (run.status !== "SUCCEEDED") process.exit(1);
 

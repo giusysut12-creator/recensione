@@ -98,6 +98,37 @@ describe("formato reale dell'export Apify (campi ridotti)", () => {
   });
 });
 
+describe("formato reale completo con personalData: false", () => {
+  // Forma di un run reale via API (ristorante, 4 ottobre 2026): niente dati del recensore,
+  // reviewUrl assente, reviewId sempre presente.
+  const real = {
+    ...base,
+    url: "https://www.google.com/maps/search/?api=1&query=Ristorante&query_place_id=ChIJ123",
+    name: null,
+    reviewerId: null,
+    reviewerUrl: null,
+    reviewerPhotoUrl: null,
+    reviewUrl: null,
+    language: "it",
+    translatedLanguage: null,
+    textTranslated: null,
+    responseFromOwnerText: null,
+    responseFromOwnerDate: null,
+    reviewDetailedRating: { Cibo: 4, Servizio: 5, Ambiente: 4 },
+  };
+
+  it("usa reviewId come ID stabile e non inventa autore né link", () => {
+    const res = normalizeGoogleItems([
+      { ...real, reviewId: "Ci9DQUlRQUNvZENodHljRjlvT2s", stars: 5, rating: null, text: "Ottimo sushi", originalLanguage: "it", publishedAtDate: "2026-09-30T19:12:00.000Z" },
+      { ...real, reviewId: "Ci9DQUlRQUNvZENodHljRjlvT2t", stars: 4, rating: null, text: null, originalLanguage: null, publishedAtDate: "2026-09-29T10:00:00.000Z" },
+    ]);
+    expect(res.reviews.map((r) => r.externalReviewId)).toEqual(["Ci9DQUlRQUNvZENodHljRjlvT2s", "Ci9DQUlRQUNvZENodHljRjlvT2t"]);
+    expect(res.reviews.every((r) => r.authorDisplay === null && r.reviewUrl === null)).toBe(true);
+    expect(res.reviews[0]).toMatchObject({ language: "it", textTranslated: null, ownerReplyText: null });
+    expect(res.reviews[1]).toMatchObject({ text: null, language: null });
+  });
+});
+
 describe("minimizeAuthorName", () => {
   it("riduce il cognome all'iniziale", () => {
     expect(minimizeAuthorName("Giulia  De Santis")).toBe("Giulia S.");
