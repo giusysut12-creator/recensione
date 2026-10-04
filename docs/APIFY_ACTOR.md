@@ -54,7 +54,11 @@ Con la versione installata di `apify-client`, l'avvio di un Actor chiama `POST /
 - `language: "it"`: le recensioni in altre lingue arrivano con la traduzione italiana di Google.
 
 ## Checklist per il primo run reale
-1. Dalla Console Apify, esegui l'Actor con un URL reale e `maxReviews: 20`.
+1. Dalla Console Apify, esegui l'Actor con un URL reale e `maxReviews: 20`; oppure, da terminale,
+   con lo stesso codice dell'app (URL, input, normalizzazione) e senza Supabase né AI:
+   `APIFY_TOKEN=... node scripts/real-run/google-reviews.mts "<link>" 100 /percorso/fuori/dal/repo`.
+   Il token deve poter avviare Actor e leggere run e dataset: un token con permessi ristretti
+   risponde `403 insufficient-permissions`.
 2. Confronta un elemento del dataset con la mappatura in `lib/sources/google/normalize.ts`.
 3. Controlla il costo del run e aggiorna `MAX_REVIEWS_PER_ANALYSIS` se necessario.
 4. Se l'Actor espone un'opzione per escludere i dati personali dei recensori, attivala con
