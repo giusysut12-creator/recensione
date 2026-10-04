@@ -287,6 +287,8 @@ async function stepImport(run: RunRow): Promise<RunStatus> {
             rating: r.rating,
             text: r.text,
             language: r.language,
+            text_translated: r.textTranslated,
+            translated_language: r.translatedLanguage,
             review_date: r.reviewDate,
             owner_reply_text: r.ownerReplyText,
             owner_reply_date: r.ownerReplyDate,

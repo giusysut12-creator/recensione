@@ -11,7 +11,9 @@ export interface NormalizedReview {
   authorDisplay: string | null;
   rating: number; // 1..5
   text: string | null;
-  language: string | null;
+  language: string | null; // lingua originale del testo
+  textTranslated: string | null; // traduzione fornita dalla fonte, se presente
+  translatedLanguage: string | null;
   reviewDate: string | null; // ISO
   ownerReplyText: string | null;
   ownerReplyDate: string | null; // ISO

@@ -71,6 +71,15 @@ describe("formato reale dell'export Apify (campi ridotti)", () => {
     { title: "Parco nazionale di Yellowstone", url, stars: 5, name: "utente.123", reviewUrl: "https://www.google.com/maps/reviews/data=!4m8!1sCCC?hl=it", text: "יש פה מהכל\nנופים יפים" },
   ];
 
+  it("conserva la traduzione e la lingua originale, non quella dell'interfaccia", () => {
+    const res = normalizeGoogleItems([
+      { ...items[2], reviewId: "x1", language: "it", originalLanguage: "iw", textTranslated: "Qui c'è di tutto", translatedLanguage: "it" },
+      { ...items[0], reviewId: "x2", language: "it", originalLanguage: null, textTranslated: null },
+    ]);
+    expect(res.reviews[0]).toMatchObject({ language: "iw", textTranslated: "Qui c'è di tutto", translatedLanguage: "it" });
+    expect(res.reviews[1]).toMatchObject({ language: null, textTranslated: null });
+  });
+
   it("ricava il placeId dall'URL e un ID stabile dall'URL della recensione", () => {
     const res = normalizeGoogleItems(items);
     expect(res.place).toMatchObject({ externalId: "ChIJVVVVVVXlUVMRu-GPNDD5qKw", name: "Parco nazionale di Yellowstone" });
@@ -84,6 +93,7 @@ describe("formato reale dell'export Apify (campi ridotti)", () => {
     const res = normalizeGoogleItems(items);
     expect(res.reviews[0].text).toBeNull();
     expect(res.reviews[2].text).toContain("נופים");
+    expect(res.reviews[0].language).toBeNull();
     expect(res.reviews[1].authorDisplay).toBe("Nome C.");
   });
 });

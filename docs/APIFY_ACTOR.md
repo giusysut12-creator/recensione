@@ -23,13 +23,18 @@ di sviluppo; le informazioni sono state raccolte da risultati di ricerca sulle p
 |---|---|
 | Input `startUrls` (URL di schede), `maxReviews`, `reviewsSort` (`newest`, `mostRelevant`, `highestRanking`, `lowestRanking`) | verificato |
 | Output `reviewId`, `stars`, `text`, `publishedAtDate`, `responseFromOwnerText`, `reviewUrl`, `placeId`, `totalScore` | verificato |
-| Output `title`, `categoryName`, `address`, `reviewsCount`, `name`, `responseFromOwnerDate`, `originalLanguage` | **da verificare** al primo run reale: il normalizzatore li tratta come opzionali |
+| Output `title`, `categoryName`, `address`, `reviewsCount`, `name`, `responseFromOwnerDate`, `originalLanguage`, `textTranslated`, `translatedLanguage` | **verificato** su un export reale completo (100 recensioni) |
 | Input per lingua, data minima, esclusione dati personali del recensore | **da verificare**: non usati. Si possono aggiungere con `APIFY_EXTRA_INPUT` dopo la verifica |
 | Prezzo | **misurato**: run reale con 100 risultati = $0,06 (~$0,60 ogni 1.000 recensioni), tariffa *pay per event* |
 
-**Primo export reale (Console, 4 ottobre 2026):** l'export conteneva solo `title`, `url`, `stars`,
-`name`, `reviewUrl`, `text`. Probabilmente si trattava della vista ridotta della Console: va
-ricontrollato con un export di tutti i campi, o via API. Confermati: `stars` intero, `text` `null` per
+**Export reali (Console, 4 ottobre 2026).** Il primo export conteneva solo `title`, `url`, `stars`,
+`name`, `reviewUrl`, `text` (vista ridotta della Console). Il secondo, con tutti i campi, conferma
+`reviewId`, `publishedAtDate` (ISO), `placeId`, `totalScore`, `reviewsCount`, `categoryName`,
+`originalLanguage` e `textTranslated` (traduzione nella lingua richiesta, conservata e mostrata
+all'utente). Nota: `language` è la lingua *richiesta*, non quella della recensione. L'output contiene
+anche dati del recensore (`reviewerId`, `reviewerUrl`, `reviewerPhotoUrl`,
+`reviewerNumberOfReviews`, `isLocalGuide`) che **non** salviamo. Su 100 recensioni reali: 100
+normalizzate, 60 con testo, 11 lingue diverse. Confermati: `stars` intero, `text` `null` per
 le recensioni con solo voto, testi in più lingue, `url` con il parametro `query_place_id`, `name` con
 il nome completo (che riduciamo). Per robustezza il normalizzatore ricava il `placeId` da
 `query_place_id` e, se manca `reviewId`, usa l'URL della recensione come ID stabile.

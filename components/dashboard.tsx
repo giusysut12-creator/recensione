@@ -328,7 +328,7 @@ function MetricsLine({ m }: { m: ItemMetrics }) {
 
 function Quote({ ex }: { ex: Example }) {
   return (
-    <blockquote className="border-l-2 border-line-strong pl-3 font-serif text-[15px] italic leading-relaxed text-ink">
+    <blockquote dir="auto" className="border-l-2 border-line-strong pl-3 font-serif text-[15px] italic leading-relaxed text-ink">
       &ldquo;{ex.quote}&rdquo;
       <footer className="mt-1 font-sans text-xs not-italic text-ink-3">
         <Stars value={ex.rating} /> · {fmtMonthYear(ex.reviewDate)}
@@ -385,7 +385,7 @@ function LanguageSection({ items, onOpen }: { items: InsightView[]; onOpen: (i: 
                 </div>
                 <ul className="mt-3 flex flex-wrap gap-2">
                   {(p.examples ?? []).map((ex) => (
-                    <li key={ex.signalId} className={`rounded-full px-3 py-1 font-serif text-sm italic ${ex.rating >= 4 ? "bg-pos-soft" : ex.rating <= 2 ? "bg-neg-soft" : "bg-surface-2"}`}>
+                    <li key={ex.signalId} dir="auto" className={`rounded-full px-3 py-1 font-serif text-sm italic ${ex.rating >= 4 ? "bg-pos-soft" : ex.rating <= 2 ? "bg-neg-soft" : "bg-surface-2"}`}>
                       &ldquo;{ex.quote}&rdquo;
                     </li>
                   ))}
@@ -412,13 +412,13 @@ function ComparisonCard({ insight, onOpen }: { insight: InsightView; onOpen: () 
         <div className="rounded-lg bg-pos-soft p-3">
           <div className="mb-2 text-xs font-semibold text-ink-2">4–5 stelle · {plural(m.positive, "recensione", "recensioni")}</div>
           {(p.positive ?? []).slice(0, 2).map((ex) => (
-            <p key={ex.signalId} className="mb-2 font-serif text-sm italic leading-relaxed">&ldquo;{ex.quote}&rdquo;</p>
+            <p key={ex.signalId} dir="auto" className="mb-2 font-serif text-sm italic leading-relaxed">&ldquo;{ex.quote}&rdquo;</p>
           ))}
         </div>
         <div className="rounded-lg bg-neg-soft p-3">
           <div className="mb-2 text-xs font-semibold text-ink-2">1–2 stelle · {plural(m.negative, "recensione", "recensioni")}</div>
           {(p.negative ?? []).slice(0, 2).map((ex) => (
-            <p key={ex.signalId} className="mb-2 font-serif text-sm italic leading-relaxed">&ldquo;{ex.quote}&rdquo;</p>
+            <p key={ex.signalId} dir="auto" className="mb-2 font-serif text-sm italic leading-relaxed">&ldquo;{ex.quote}&rdquo;</p>
           ))}
         </div>
       </div>
@@ -482,6 +482,7 @@ function Highlighted({ text, quote, start, end }: { text: string; quote: string 
 
 function ReviewCard({ review, evidence }: { review: ReviewView; evidence?: EvidenceView }) {
   const [replyOpen, setReplyOpen] = useState(false);
+  const [translationOpen, setTranslationOpen] = useState(false);
   return (
     <article className="rounded-xl border border-line bg-surface p-4">
       <header className="flex flex-wrap items-center justify-between gap-2 text-xs text-ink-3">
@@ -492,13 +493,24 @@ function ReviewCard({ review, evidence }: { review: ReviewView; evidence?: Evide
         <span>{fmtDate(review.date)}</span>
       </header>
       {review.text ? (
-        <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-ink">
+        <p dir="auto" className="mt-2 whitespace-pre-line text-sm leading-relaxed text-ink">
           {evidence ? <Highlighted text={review.text} quote={evidence.quote} start={evidence.start} end={evidence.end} /> : review.text}
         </p>
       ) : (
         <p className="mt-2 text-sm italic text-ink-3">Solo valutazione, senza testo.</p>
       )}
+      {translationOpen && review.translation ? (
+        <p className="mt-2 whitespace-pre-line rounded-lg bg-surface-2 p-3 text-sm leading-relaxed text-ink-2">
+          <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-ink-3">Traduzione automatica di Google</span>
+          {review.translation}
+        </p>
+      ) : null}
       <div className="mt-2 flex flex-wrap gap-4 text-xs">
+        {review.translation ? (
+          <button type="button" onClick={() => setTranslationOpen((v) => !v)} className="text-ink-2 underline underline-offset-4">
+            {translationOpen ? "Nascondi traduzione" : "Mostra traduzione"}
+          </button>
+        ) : null}
         {review.ownerReply ? (
           <button type="button" onClick={() => setReplyOpen((v) => !v)} className="text-ink-2 underline underline-offset-4">
             {replyOpen ? "Nascondi risposta" : "Risposta del titolare"}

@@ -9,8 +9,11 @@
  * NON sostituisce il test con Apify e AI reali.
  *
  * Uso: POSTGREST_URL=http://127.0.0.1:3001 PORT=4010 node scripts/e2e/mock-services.mjs
+ * Con MOCK_DATASET_FILE=export.json il finto Apify restituisce un export reale della Console
+ * invece dei dati sintetici (utile per verificare la normalizzazione su dati veri).
  */
 import http from "node:http";
+import { readFileSync } from "node:fs";
 import { buildFixture } from "./fixture.mjs";
 
 const PORT = Number(process.env.PORT ?? 4010);
@@ -146,7 +149,7 @@ function handleApify(req, url, res) {
     return send(200, { data: { id: m[1], status: run.polls > SCRAPE_POLLS ? "SUCCEEDED" : "RUNNING", defaultDatasetId: run.datasetId } });
   }
   if (req.method === "GET" && (m = url.pathname.match(/^\/v2\/datasets\/([^/]+)\/items$/))) {
-    const items = buildFixture();
+    const items = process.env.MOCK_DATASET_FILE ? JSON.parse(readFileSync(process.env.MOCK_DATASET_FILE, "utf8")) : buildFixture();
     const offset = Number(url.searchParams.get("offset") ?? 0);
     const limit = Number(url.searchParams.get("limit") ?? 1000);
     const page = items.slice(offset, offset + limit);

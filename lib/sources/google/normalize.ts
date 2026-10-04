@@ -131,7 +131,10 @@ export function normalizeGoogleItems(items: unknown[]): NormalizationResult {
       authorDisplay,
       rating,
       text,
-      language: str(item.originalLanguage) ?? str(item.language),
+      // "language" dell'Actor è la lingua richiesta, non quella della recensione
+      language: text ? str(item.originalLanguage) : null,
+      textTranslated: text ? cleanReviewText(str(item.textTranslated)) : null,
+      translatedLanguage: text && str(item.textTranslated) ? str(item.translatedLanguage) : null,
       reviewDate,
       ownerReplyText: cleanReviewText(str(item.responseFromOwnerText)),
       ownerReplyDate: isoDate(item.responseFromOwnerDate),
@@ -141,7 +144,6 @@ export function normalizeGoogleItems(items: unknown[]): NormalizationResult {
         // Sottoinsieme minimo e non identificativo, utile per debug
         publishAt: str(item.publishAt),
         likesCount: num(item.likesCount),
-        textTranslated: str(item.textTranslated) ? true : false,
       },
     });
   }

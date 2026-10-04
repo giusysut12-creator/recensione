@@ -18,6 +18,8 @@ export interface ReviewView {
   author: string | null;
   rating: number;
   text: string | null;
+  language: string | null;
+  translation: string | null;
   date: string | null;
   ownerReply: string | null;
   url: string | null;
@@ -171,7 +173,7 @@ export async function getAnalysisView(runId: string): Promise<AnalysisView | nul
       const rrows = must(
         await db()
           .from("reviews")
-          .select("id,author_display,rating,text,review_date,owner_reply_text,review_url")
+          .select("id,author_display,rating,text,language,text_translated,review_date,owner_reply_text,review_url")
           .in("id", part),
         "reviews",
       ) as {
@@ -179,6 +181,8 @@ export async function getAnalysisView(runId: string): Promise<AnalysisView | nul
         author_display: string | null;
         rating: number;
         text: string | null;
+        language: string | null;
+        text_translated: string | null;
         review_date: string | null;
         owner_reply_text: string | null;
         review_url: string | null;
@@ -189,6 +193,9 @@ export async function getAnalysisView(runId: string): Promise<AnalysisView | nul
           author: r.author_display,
           rating: r.rating,
           text: r.text,
+          language: r.language,
+          // Traduzione mostrata solo se l'originale non è in italiano
+          translation: r.text_translated && r.language && !r.language.startsWith("it") ? r.text_translated : null,
           date: r.review_date,
           ownerReply: r.owner_reply_text,
           url: r.review_url,
