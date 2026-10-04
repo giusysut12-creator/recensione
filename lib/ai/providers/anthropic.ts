@@ -16,8 +16,14 @@ export class AnthropicProvider implements LLMProvider {
   constructor(
     apiKey: string,
     private models: Partial<Record<ModelTier, string>> = {},
+    workspaceId?: string,
   ) {
-    this.client = new Anthropic({ apiKey, maxRetries: 3 });
+    // Le chiavi non legate a un workspace richiedono l'header anthropic-workspace-id
+    this.client = new Anthropic({
+      apiKey,
+      maxRetries: 3,
+      defaultHeaders: workspaceId ? { "anthropic-workspace-id": workspaceId } : undefined,
+    });
   }
 
   modelFor(tier: ModelTier): string {

@@ -15,7 +15,11 @@ export function getProvider(): LLMProvider {
     provider = new OpenAIProvider(e.OPENAI_API_KEY, { fast: e.AI_MODEL_FAST, smart: e.AI_MODEL_SMART });
   } else {
     if (!e.ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY mancante");
-    provider = new AnthropicProvider(e.ANTHROPIC_API_KEY, { fast: e.AI_MODEL_FAST, smart: e.AI_MODEL_SMART });
+    provider = new AnthropicProvider(
+      e.ANTHROPIC_API_KEY,
+      { fast: e.AI_MODEL_FAST, smart: e.AI_MODEL_SMART },
+      e.ANTHROPIC_WORKSPACE_ID,
+    );
   }
   return provider;
 }

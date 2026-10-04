@@ -27,6 +27,8 @@ const EnvSchema = z.object({
   AI_MODEL_FAST: z.string().optional(),
   AI_MODEL_SMART: z.string().optional(),
   ANTHROPIC_API_KEY: z.string().optional(),
+  // Solo per chiavi non legate a un workspace: ID del workspace da usare (wrkspc_...)
+  ANTHROPIC_WORKSPACE_ID: z.string().trim().min(1).optional(),
   OPENAI_API_KEY: z.string().optional(),
 
   // Accesso riservato: codice condiviso + segreto per firmare il cookie di sessione
